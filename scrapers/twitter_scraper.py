@@ -29,8 +29,7 @@ def main():
         df_temp.loc[0, 'text'] = result["text"]
         df = df.append(df_temp)
 
-    df.reset_index(inplace=True)
-    del df['index']
-    df.to_pickle('C:/Users/workspace/pickles/amdryzen_tweets.p')
+    df.reset_index(drop=True, inplace=True)
+    df.to_pickle('~/workspace/tmp/amdryzen_tweets.p')
 if __name__ == "__main__":
     main()
