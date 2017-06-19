@@ -70,7 +70,7 @@ def main():
         df = df.append(df_temp)
 
     df.reset_index(drop=True, inplace=True)
-    df.to_pickle('/home/jfreek/workspace/tmp/{acc}_tweets.p'.format(acc=account))
+    df.to_pickle('/home/jfreek/workspace/Mining_The_Social_Web/tmp/{acc}_tweets.p'.format(acc=account))
 
 if __name__ == "__main__":
     main()
