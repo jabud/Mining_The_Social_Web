@@ -6,3 +6,4 @@
 *.json
 config.py
 */tmp/*
+datasets/*
