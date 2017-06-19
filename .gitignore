@@ -4,5 +4,5 @@
 *.pyc
 *.p
 *.json
-*/config.py
+config.py
 */tmp/*
