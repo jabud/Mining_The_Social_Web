@@ -1,6 +1,9 @@
-import nltk
-from nltk.corpus import movie_reviews
-
-documents = [(list(movie_reviews.words(fileid)), category)
-             for category in movie_reviews.categories()
-             for fileid in movie_reviews.fileids(category)]
+# -*- coding: UTF-8 -*-
+import pandas as pd
+import pickle
+from nltk.corpus import stopwords
+  
+# load the model from disk
+vec_model = pickle.load(open(filename, 'rb'))
+# create new vectors
+vec.transform(['Insert new string to transform here'])
