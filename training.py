@@ -79,8 +79,8 @@ print(classification_report(y_test, y_pred))
 # train with all data
 vec_svm.fit(X, y)
 # save model
-filename = '/home/workspace/Mining_The_Social_Web/models/svmtfidf20k.pkl'
-joblib.dumb(vec_svm ,filename)
+filename = '/home/jfreek/workspace/Mining_The_Social_Web/models/svmtfidf20k.sav'
+joblib.dump(vec_svm ,filename)
 
 # Naive Bayes Classifier ****************************************************************
 mnb_clf = naive_bayes.MultinomialNB()
