@@ -147,8 +147,8 @@ def main():
 	# confusion matrix
 	confusion_m = confusion_matrix(y_test, y_pred)
 	# show results:
-	print ("accuracy: " + result)
-	print ("Confusion Matrix: " + confusion_m)
+	print ("accuracy: " + str(result))
+	print ("Confusion Matrix: \n" + str(confusion_m))
 	print(classification_report(y_test, y_pred))
 
 
