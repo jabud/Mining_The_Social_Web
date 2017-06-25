@@ -26,7 +26,7 @@ def replace_text(text, replace_list, replace_by):
     return text
 
 
-def preprocess(tset, to_unicode=True):
+def clean_text(tset, to_unicode=True):
     """
     Replaces undesirable characters and transform to unicode if needed. 
     :param tset: str
@@ -41,64 +41,69 @@ def preprocess(tset, to_unicode=True):
     tset = re.sub(r"\s{2,}", " ", tset)
     return tset
 
-# load training dataset
-trainset_df = pd.read_csv('/home/jfreek/workspace/Mining_The_Social_Web/datasets/alltrainset.csv', 
-                      sep='\t', header=0, names=['category', 'text'])
-# preprocess text
-trainset_df['text'] = trainset_df['text'].map(lambda x: preprocess(tset=x) if x else x)
-# Training data
-X = trainset_df['text'].values
-y = trainset_df['category'].values
-x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=.3, random_state=6)
-# stopwords
-stop_words = set(stopwords.words('english'))
-# initialize model to vectorize
-vec = TfidfVectorizer(lowercase=True, use_idf = True, norm=None, smooth_idf=False, 
-	analyzer='word', input='content', stop_words=None, min_df=10, max_features=20000)
 
-# SVM classifier ****************************************************************
-svm_clf =svm.LinearSVC(C=0.1)
-# Pipeline
-vec_svm = Pipeline([('vectorize', vec), ('svm', svm_clf)])
+def svm_classifier(X, y, sw=False, checkpoint=True):
+	# stopwords
+	stop_words = set(stopwords.words('english')) if sw else None
+	# initialize model to vectorize
+	vec = TfidfVectorizer(lowercase=True, use_idf = True, norm=None, smooth_idf=False, 
+		analyzer='word', input='content', stop_words=stop_words, min_df=10, max_features=20000)
+	# initialize svm model
+	svm_clf =svm.LinearSVC(C=0.1)
+	# Pipeline
+	vec_svm = Pipeline([('vectorize', vec), ('svm', svm_clf)])
+	# train with all data
+	vec_svm.fit(X, y)
+	# save model
+	if checkpoint:
+		filename = '/home/jfreek/workspace/Mining_The_Social_Web/models/svmtfidf.sav'
+		joblib.dump(vec_svm ,filename)
+	# return 
+	return vec_svm
 
-t0 = time.time()
-vec_svm.fit(x_train, y_train)
-t1 = time.time()
-total = t1 - t0
-print "total time: " + str(total)
+def nb_classifier(X, y, sw=False, checkpoint=True):
+	# stopwords
+	stop_words = set(stopwords.words('english')) if sw else None
+	# initialize model to vectorize
+	vec = TfidfVectorizer(lowercase=True, use_idf = True, norm=None, smooth_idf=False, 
+		analyzer='word', input='content', stop_words=stop_words, min_df=10, max_features=20000)
+	# initialize
+	mnb_clf = naive_bayes.MultinomialNB()
+	# Pipeline
+	vec_nb = Pipeline([('vectorize', vec), ('mnb', mnb_clf)])
+	# fit model
+	vec_nb.fit(X, y)
+	# save model
+	if checkpoint:
+		filename = '/home/jfreek/workspace/Mining_The_Social_Web/models/nbtfidf.sav'
+		joblib.dump(vec_nb ,filename)
+	return vec_nb
 
-# get average accuracy
-result = vec_svm.score(x_test, y_test)
-# predict 0 or 1 Conf Matrix
-y_pred = vec_svm.predict(x_test)
-confusion_m = confusion_matrix(y_test, y_pred)
-# show results:
-print result
-print confusion_m
-print(classification_report(y_test, y_pred))
-# train with all data
-vec_svm.fit(X, y)
-# save model
-filename = '/home/jfreek/workspace/Mining_The_Social_Web/models/svmtfidf20k.sav'
-joblib.dump(vec_svm ,filename)
 
-# Naive Bayes Classifier ****************************************************************
-mnb_clf = naive_bayes.MultinomialNB()
-# Pipeline
-vec_nb = Pipeline([('vectorize', vec), ('mnb', mnb_clf)])
+def main():
+	# load training dataset
+	trainset_df = pd.read_csv('/home/jfreek/workspace/Mining_The_Social_Web/datasets/alltrainset.csv', 
+	                      sep='\t', header=0, names=['category', 'text'])
+	# preprocess text
+	trainset_df['text'] = trainset_df['text'].map(lambda x: clean_text(tset=x) if x else x)
+	# data
+	X = trainset_df['text'].values
+	y = trainset_df['category'].values
+	# data partition
+	x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=.3, random_state=6)
+	# fit model
+	svmclf = svm_classifier(X=x_train, y=y_train, sw=False, checkpoint=False)
+	# get average accuracy
+	result = svmclf.score(x_test, y_test)
+	# predict 0 or 1 Conf Matrix
+	y_pred = svmclf.predict(x_test)
+	# confusion matrix
+	confusion_m = confusion_matrix(y_test, y_pred)
+	# show results:
+	print ("accuracy: " + result)
+	print ("Confusion Matrix: " + confusion_m)
+	print(classification_report(y_test, y_pred))
 
-t0 = time.time()
-vec_nb.fit(x_train, y_train)
-t1 = time.time()
-total = t1 - t0
-print "total time: " + str(total)
 
-# get average accuracy
-result = vec_nb.score(x_test, y_test)
-# predict 0 or 1 Conf Matrix
-y_pred = vec_nb.predict(x_test)
-confusion_m = confusion_matrix(y_test, y_pred)
-# show results:
-print result
-print confusion_m
-print(classification_report(y_test, y_pred))
+if __name__ == '__main__':
+    main()
