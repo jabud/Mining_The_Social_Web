@@ -13,7 +13,7 @@ from sklearn.metrics import confusion_matrix, classification_report
 def preprocess(checkpoint=True):
 	"""
 	Reads, gives format and concatenate data frames into one.
-    :param checkpoint: True to save data frame: bool 
+	:param checkpoint: True to save data frame: bool 
 	"""
 	# getting nltk dataset:
 	documents = [(movie_reviews.raw(fileid), category)
