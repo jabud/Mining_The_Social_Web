@@ -19,7 +19,7 @@ def preprocess(checkpoint=True):
 	documents = [(movie_reviews.raw(fileid), category)
              for category in movie_reviews.categories()
              for fileid in movie_reviews.fileids(category)]
-    # data framing
+	# data framing
 	nltk_df = pd.DataFrame()
 	for review, category in documents:
 	    temp = pd.DataFrame(data={'text':review, 'category':category}, index=[0])
