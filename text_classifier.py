@@ -1,9 +1,10 @@
 # -*- coding: UTF-8 -*-
 import pandas as pd
-import pickle
+import joblib
 from nltk.corpus import stopwords
   
-# load the model from disk
-vec_model = pickle.load(open(filename, 'rb'))
+# load the model
+filename = '/home/jfreek/workspace/Mining_The_Social_Web/models/tfidfsw.sav'
+vectorizer = joblib.load(filename)
 # create new vectors
-vec.transform(['Insert new string to transform here'])
+vectorizer.transform(['Insert new string to transform here'])
