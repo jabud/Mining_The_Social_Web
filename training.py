@@ -1,14 +1,61 @@
 # -*- coding: UTF-8 -*-
 import pandas as pd
-from nltk.corpus import stopwords
+from nltk.corpus import stopwords, movie_reviews
 import re
-import time
 import joblib
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn import svm, naive_bayes
 from sklearn.pipeline import Pipeline
 from sklearn.cross_validation import train_test_split
 from sklearn.metrics import confusion_matrix, classification_report
+
+
+def preprocess(checkpoint=True):
+	"""
+	Reads, gives format and concatenate data frames into one.
+    :param checkpoint: True to save data frame: bool 
+	"""
+	# getting nltk dataset:
+	documents = [(movie_reviews.raw(fileid), category)
+             for category in movie_reviews.categories()
+             for fileid in movie_reviews.fileids(category)]
+    # data framing
+	nltk_df = pd.DataFrame()
+	for review, category in documents:
+	    temp = pd.DataFrame(data={'text':review, 'category':category}, index=[0])
+	    nltk_df = nltk_df.append(temp) 
+	nltk_df.reset_index(drop=True, inplace=True)
+	nltk_df['category'] = nltk_df['category'].map(lambda x: 0 if x=='neg' else 1)
+
+	# getting tweets dataset from stanford:
+	tweets_df = pd.read_csv('/home/jfreek/workspace/Mining_The_Social_Web/datasets/tweetsstanford_training.csv', 
+                       sep=',', header=None, names=['category', 'id', 'date', 'query', 'user', 'text'])
+	tweets_df['category'] = tweets_df['category'].map(lambda x: 1 if x==4 else 0)
+
+	# getting dataset from University of Michigan:
+	umich_df = pd.read_csv('/home/jfreek/workspace/Mining_The_Social_Web/datasets/umich_training.txt', 
+                       sep="\t", header = None, names=['category', 'text'])
+
+	# getting reviews dataset from Amazon:
+	amazon_df = pd.read_csv('/home/jfreek/workspace/Mining_The_Social_Web/datasets/amazon_cells_labelled.txt', 
+	sep="\t", header = None, names=['text', 'category'])
+
+	# getting review dataset from IMDB
+	imdb_df = pd.read_csv('/home/jfreek/workspace/Mining_The_Social_Web/datasets/imdb_labelled.txt', 
+	sep="\t", header = None, names=['text', 'category'])
+
+	# getting review dataset from Yelp
+	yelp_df = pd.read_csv('/home/jfreek/workspace/Mining_The_Social_Web/datasets/yelp_labelled.txt', 
+	sep="\t", header = None, names=['text', 'category'])
+
+	# concatenate ALL:
+	trainset_df = pd.concat([nltk_df, tweets_df[['category', 'text']], umich_df, yelp_df,imdb_df, amazon_df])
+	trainset_df.reset_index(drop=True, inplace=True)
+
+	if checkpoint:
+		trainset_df.to_csv(path_or_buf='/home/jfreek/workspace/Mining_The_Social_Web/datasets/alltrainset.csv', 
+                header=['category', 'text'], columns=['category', 'text'], index=None, sep='\t', mode='w')
+	return trainset_df
 
 
 def replace_text(text, replace_list, replace_by):
