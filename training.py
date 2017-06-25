@@ -5,7 +5,7 @@ import re
 import time
 import joblib
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn import svm
+from sklearn import svm, naive_bayes
 from sklearn.pipeline import Pipeline
 from sklearn.cross_validation import train_test_split
 from sklearn.metrics import confusion_matrix, classification_report
@@ -46,26 +46,20 @@ trainset_df = pd.read_csv('/home/jfreek/workspace/Mining_The_Social_Web/datasets
                       sep='\t', header=0, names=['category', 'text'])
 # preprocess text
 trainset_df['text'] = trainset_df['text'].map(lambda x: preprocess(tset=x) if x else x)
-# create a list of documents
-doclist = trainset_df['text'].tolist()
-# stopwords
-stop_words = set(stopwords.words('english'))
-# initialize model to vectorize
-vec = TfidfVectorizer(lowercase=True, use_idf = True, norm=None, smooth_idf=False, 
-	analyzer='word', input='content', stop_words=stop_words, min_df=10, max_features=5000)
-# train vectorizer
-vec.fit_transform(doclist)
-# save vectorizer
-filename = '/home/jfreek/workspace/Mining_The_Social_Web/models/tfidfsw.sav'
-joblib.dump(vec, filename)
-# SVM classifier
-svm_clf =svm.LinearSVC(C=0.1)
-vec_svm = Pipeline([('vectorize', vec), ('svm', svm_clf)])
-
 # Training data
 X = trainset_df['text'].values
 y = trainset_df['category'].values
 x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=.3, random_state=6)
+# stopwords
+stop_words = set(stopwords.words('english'))
+# initialize model to vectorize
+vec = TfidfVectorizer(lowercase=True, use_idf = True, norm=None, smooth_idf=False, 
+	analyzer='word', input='content', stop_words=None, min_df=10, max_features=20000)
+
+# SVM classifier ****************************************************************
+svm_clf =svm.LinearSVC(C=0.1)
+# Pipeline
+vec_svm = Pipeline([('vectorize', vec), ('svm', svm_clf)])
 
 t0 = time.time()
 vec_svm.fit(x_train, y_train)
@@ -82,4 +76,29 @@ confusion_m = confusion_matrix(y_test, y_pred)
 print result
 print confusion_m
 print(classification_report(y_test, y_pred))
+# train with all data
+vec_svm.fit(X, y)
+# save model
+filename = '/home/workspace/Mining_The_Social_Web/models/svmtfidf20k.pkl'
+joblib.dumb(vec_svm ,filename)
 
+# Naive Bayes Classifier ****************************************************************
+mnb_clf = naive_bayes.MultinomialNB()
+# Pipeline
+vec_nb = Pipeline([('vectorize', vec), ('mnb', mnb_clf)])
+
+t0 = time.time()
+vec_nb.fit(x_train, y_train)
+t1 = time.time()
+total = t1 - t0
+print "total time: " + str(total)
+
+# get average accuracy
+result = vec_nb.score(x_test, y_test)
+# predict 0 or 1 Conf Matrix
+y_pred = vec_nb.predict(x_test)
+confusion_m = confusion_matrix(y_test, y_pred)
+# show results:
+print result
+print confusion_m
+print(classification_report(y_test, y_pred))
