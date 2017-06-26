@@ -93,8 +93,8 @@ def svm_classifier(X, y, sw=False, checkpoint=True):
 	# stopwords
 	stop_words = set(stopwords.words('english')) if sw else None
 	# initialize model to vectorize
-	vec = TfidfVectorizer(lowercase=True, use_idf = True, norm=None, smooth_idf=False, 
-		analyzer='word', input='content', stop_words=stop_words, min_df=10, max_features=20000)
+	vec = TfidfVectorizer(lowercase=True, use_idf = True, norm='l2', smooth_idf=False, analyzer='word', 
+		input='content', stop_words=stop_words, min_df=10, max_features=20000, ngram_range=(1, 2), sublinear_tf=True)
 	# initialize svm model
 	svm_clf =svm.LinearSVC(C=0.1)
 	# Pipeline
@@ -139,7 +139,7 @@ def main():
 	# data partition
 	x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=.3, random_state=6)
 	# fit model
-	svmclf = svm_classifier(X=x_train, y=y_train, sw=False, checkpoint=False)
+	svmclf = svm_classifier(X=x_train, y=y_train, sw=False, checkpoint=True)
 	# get average accuracy
 	result = svmclf.score(x_test, y_test)
 	# predict 0 or 1 Conf Matrix
