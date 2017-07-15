@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y \
 RUN apt-get update && apt-get install -y \
 	ipython ipython-notebook nano python-joblib python-tk
 
-ADD . /Mining_The_Social_Web
+ADD ./Mining_The_Social_Web
 
 RUN cd /Mining_The_Social_Web && pip install --upgrade pip \
 	&& pip install -r requirements.txt
