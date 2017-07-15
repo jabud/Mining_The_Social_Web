@@ -1,6 +1,7 @@
 .idea
 .ipynb_checkpoints
 *.txt
+!requirements.txt
 *.pyc
 *.p
 *.json
