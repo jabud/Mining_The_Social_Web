@@ -17,7 +17,7 @@ def data_format(data, name, checkpoint=True):
 
 	df.reset_index(drop=True, inplace=True)
 	if checkpoint:
-		df.to_pickle('/home/jfreek/workspace/Mining_The_Social_Web/tmp/{acc}_tweets.p'.format(acc=name))
+		df.to_pickle('/Mining_The_Social_Web/tmp/{acc}_tweets.p'.format(acc=name))
 	return df
 
 
@@ -32,7 +32,7 @@ def main():
 	# clean text
 	df['text'] = df['text'].map(lambda x: clean_text(tset=x) if x else x)
 	# load the model
-	filename = '/home/jfreek/workspace/Mining_The_Social_Web/models/svmtfidf20k.sav'
+	filename = '/Mining_The_Social_Web/models/svmtfidf.sav'
 	clf = joblib.load(filename)
 	df['category'] = df['text'].map(lambda x: clf.predict([x])[0] if x else -1)
 	pos = df['category'].value_counts(normalize=True)[1]
