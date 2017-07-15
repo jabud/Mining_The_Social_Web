@@ -28,24 +28,24 @@ def preprocess(checkpoint=True):
 	nltk_df['category'] = nltk_df['category'].map(lambda x: 0 if x=='neg' else 1)
 
 	# getting tweets dataset from stanford:
-	tweets_df = pd.read_csv('/home/jfreek/workspace/Mining_The_Social_Web/datasets/tweetsstanford_training.csv', 
+	tweets_df = pd.read_csv('/Mining_The_Social_Web/datasets/tweetsstanford_training.csv', 
                        sep=',', header=None, names=['category', 'id', 'date', 'query', 'user', 'text'])
 	tweets_df['category'] = tweets_df['category'].map(lambda x: 1 if x==4 else 0)
 
 	# getting dataset from University of Michigan:
-	umich_df = pd.read_csv('/home/jfreek/workspace/Mining_The_Social_Web/datasets/umich_training.txt', 
+	umich_df = pd.read_csv('/Mining_The_Social_Web/datasets/umich_training.txt', 
                        sep="\t", header = None, names=['category', 'text'])
 
 	# getting reviews dataset from Amazon:
-	amazon_df = pd.read_csv('/home/jfreek/workspace/Mining_The_Social_Web/datasets/amazon_cells_labelled.txt', 
+	amazon_df = pd.read_csv('/Mining_The_Social_Web/datasets/amazon_cells_labelled.txt', 
 	sep="\t", header = None, names=['text', 'category'])
 
 	# getting review dataset from IMDB
-	imdb_df = pd.read_csv('/home/jfreek/workspace/Mining_The_Social_Web/datasets/imdb_labelled.txt', 
+	imdb_df = pd.read_csv('/Mining_The_Social_Web/datasets/imdb_labelled.txt', 
 	sep="\t", header = None, names=['text', 'category'])
 
 	# getting review dataset from Yelp
-	yelp_df = pd.read_csv('/home/jfreek/workspace/Mining_The_Social_Web/datasets/yelp_labelled.txt', 
+	yelp_df = pd.read_csv('/Mining_The_Social_Web/datasets/yelp_labelled.txt', 
 	sep="\t", header = None, names=['text', 'category'])
 
 	# concatenate ALL:
@@ -53,7 +53,7 @@ def preprocess(checkpoint=True):
 	trainset_df.reset_index(drop=True, inplace=True)
 
 	if checkpoint:
-		trainset_df.to_csv(path_or_buf='/home/jfreek/workspace/Mining_The_Social_Web/datasets/alltrainset.csv', 
+		trainset_df.to_csv(path_or_buf='/Mining_The_Social_Web/datasets/alltrainset.csv', 
                 header=['category', 'text'], columns=['category', 'text'], index=None, sep='\t', mode='w')
 	return trainset_df
 
@@ -103,7 +103,7 @@ def svm_classifier(X, y, sw=False, checkpoint=True):
 	vec_svm.fit(X, y)
 	# save model
 	if checkpoint:
-		filename = '/home/jfreek/workspace/Mining_The_Social_Web/models/svmtfidf.sav'
+		filename = '/Mining_The_Social_Web/models/svmtfidf.sav'
 		joblib.dump(vec_svm ,filename)
 	# return 
 	return vec_svm
@@ -122,14 +122,14 @@ def nb_classifier(X, y, sw=False, checkpoint=True):
 	vec_nb.fit(X, y)
 	# save model
 	if checkpoint:
-		filename = '/home/jfreek/workspace/Mining_The_Social_Web/models/nbtfidf.sav'
+		filename = '/Mining_The_Social_Web/models/nbtfidf.sav'
 		joblib.dump(vec_nb ,filename)
 	return vec_nb
 
 
 def main():
 	# load training dataset
-	trainset_df = pd.read_csv('/home/jfreek/workspace/Mining_The_Social_Web/datasets/alltrainset.csv', 
+	trainset_df = pd.read_csv('/Mining_The_Social_Web/datasets/alltrainset.csv', 
 	                      sep='\t', header=0, names=['category', 'text'])
 	# preprocess text
 	trainset_df['text'] = trainset_df['text'].map(lambda x: clean_text(tset=x) if x else x)
