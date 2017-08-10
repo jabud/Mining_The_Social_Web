@@ -4,7 +4,6 @@ import pandas as pd
 from urllib import unquote
 
 # TODO: ADD parameters to specify account from command line
-# TODO: README, add all libraries and tools needed, if possible dockerized everything!
 
 
 class TwitterScraper:
