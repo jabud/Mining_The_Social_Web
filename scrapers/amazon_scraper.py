@@ -1,7 +1,7 @@
 import amazonproduct
 import pandas as pd
 
-# TODO: Get price, title, image(s), link to buy and structure it.
+# TODO: Get price, title, image(s), link to buy and structure it. item.ItemLinks.ItemLink.URL
 # TODO: Scrape review's urls :( 
 
 
@@ -24,7 +24,7 @@ class AmazonScraper:
 		for item in items:
 			results = {}
 			results["price"] = unicode(item.ItemAttributes.ListPrice.FormattedPrice) if hasattr(item.ItemAttributes, 'ListPrice') else None
-			results["image"] = item.LargeImage.URL.text if hasattr(item.LargeImage, 'LargeImage') else None
+			results["image"] = item.LargeImage.URL.text if hasattr(item, 'LargeImage') else None
 			results["url"] = item.CustomerReviews.IFrameURL.text if item.CustomerReviews.HasReviews else None
 			df=df.append(other=results, ignore_index=True)
 		return df
