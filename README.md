@@ -31,7 +31,7 @@ vi. [twitter==1.17.1](https://github.com/sixohsix/twitter)
 
 Download [Docker](https://docs.docker.com/engine/installation/) and build the image as follows:
 ```
-  docker build -t mining_the_social_web ~/Mining_The_Social_Web/
+docker build -t mining_the_social_web ~/Mining_The_Social_Web/
  ``` 
 
 then, run the container with the instruction:
