@@ -1,8 +1,19 @@
 import amazonproduct
-import pandas as pd
+from pandas import DataFrame
+from lxml import html
+import requests
 
-# TODO: Get price, title, image(s), link to buy and structure it. item.ItemLinks.ItemLink.URL
-# TODO: Scrape review's urls :( 
+# TODO: Get link to buy. item.ItemLinks.ItemLink.URL
+
+
+def get_reviews(url):
+	"""
+	Mini scraper to get reviews from url
+	"""
+	page = requests.get(url)
+	tree = html.fromstring(page.content)
+	review_list = tree.xpath('//div[@class="reviewText"]/text()')
+	return review_list
 
 
 class AmazonScraper:
@@ -19,14 +30,20 @@ class AmazonScraper:
 										'locale': 'mx'})
 
 	def scrape_items(self, category, search):
+		"""
+		Scrapes items using API.
+		:param category: Item category e.g. books, electronics: str
+		:param search: title of item to search: str
+		"""
 		items = self.api.item_search(search_index=category, ResponseGroup='Large', Title=search)
-		df = pd.DataFrame()
+		df = DataFrame()
 		for item in items:
 			results = {}
 			results["title"] = unicode(item.ItemAttributes.Title) if hasattr(item.ItemAttributes, 'Title') else None
 			results["price"] = unicode(item.ItemAttributes.ListPrice.FormattedPrice) if hasattr(item.ItemAttributes, 'ListPrice') else None
 			results["image_url"] = item.LargeImage.URL.text if hasattr(item, 'LargeImage') else None
 			results["reviews_url"] = item.CustomerReviews.IFrameURL.text if item.CustomerReviews.HasReviews else None
+			results['reviews'] = get_reviews(results["reviews_url"]) if results["reviews_url"] else None
 			df=df.append(other=results, ignore_index=True)
 		return df
 
