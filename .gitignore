@@ -5,6 +5,7 @@
 *.pyc
 *.p
 *.json
+*.csv
 config.py
 */tmp/*
 datasets/*
