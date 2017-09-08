@@ -6,6 +6,8 @@
 *.p
 *.json
 *.csv
+*.png
+*.jpg
 config.py
 */tmp/*
 datasets/*
