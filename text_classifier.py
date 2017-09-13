@@ -41,16 +41,6 @@ def main():
 	# print results
 	print ('positive %: ' + str(pos))
 	print ('negative %: ' + str(neg))
-	# to csv
-	tocsv=pd.DataFrame(data={"company": account, "positive": pos, "negative": neg}, index=[0])
-	# save csv
-	tocsv.to_csv(path_or_buf='/Mining_The_Social_Web/tmp/pepsico.csv', 
-		header=['company', 'positive', 'negative'],
-        columns=['company', 'positive', 'negative'], index=None, sep=',', mode='w')
-	# df = pd.read_csv('/Mining_The_Social_Web/tmp/cocacola.csv', 
- #                    sep=',', header=0, names=['company', 'positive', 'negative'])
-	# get top 10 accounts
-	df.screen_name.value_counts().head(10)
 
 
 if __name__ == '__main__':
