@@ -3,7 +3,6 @@ layout: page
 title: "Mining the social web"
 ---
 
-# Mining_The_Social_Web
 Acquire, analyze, and summarize data from all corners of the social web.
 
 
