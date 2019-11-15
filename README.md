@@ -1,6 +1,5 @@
 ---
 title: "Project"
-permalink: "/project/"
 ---
 
 # Mining_The_Social_Web
