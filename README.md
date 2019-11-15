@@ -1,3 +1,8 @@
+---
+title: "Project"
+permalink: "/project/"
+---
+
 # Mining_The_Social_Web
 Acquire, analyze, and summarize data from all corners of the social web.
 
