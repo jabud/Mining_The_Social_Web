@@ -1,6 +1,6 @@
 ---
 layout: page
-title: "ml_pipeline"
+title: "Sentiment analysis"
 ---
 
 # Mining_The_Social_Web
