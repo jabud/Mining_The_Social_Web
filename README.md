@@ -1,5 +1,6 @@
 ---
-title: "Project"
+layout: page
+title: "ml_pipeline"
 ---
 
 # Mining_The_Social_Web
